@@ -1,0 +1,291 @@
+:host ::ng-deep .fc-event.conflict {
+  background-color: #f87171 !important; 
+  border-color: #ef4444 !important;
+}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+* {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Sidebar Styles */
+.glass-sidebar {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+}
+
+.nav-item {
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateX(5px);
+}
+
+.nav-item.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Header Styles */
+.glass-header {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Card Styles */
+.glass-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Calendar Container */
+.calendar-container {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Elements */
+.modern-input, .modern-select {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.modern-input:focus, .modern-select:focus {
+  outline: none;
+  border-color: #667eea;
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+.modern-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.modern-select option {
+  background: #1f2937;
+  color: white;
+}
+
+/* Button Styles */
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(240, 147, 251, 0.4);
+}
+
+.btn-logout {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-logout:hover {
+  background: rgba(239, 68, 68, 0.3);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+/* Modal Styles */
+.modal-backdrop {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background: linear-gradient(135deg, rgba(31, 41, 55, 0.95) 0%, rgba(17, 24, 39, 0.95) 100%);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+}
+
+/* Animations */
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Conflict styles pour le calendrier */
+.conflict {
+  background-color: #fecaca !important;
+  border-color: #ef4444 !important;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .glass-sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+  
+  .glass-sidebar.open {
+    transform: translateX(0);
+  }
+  
+  .ml-64 {
+    margin-left: 0;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Container du calendrier avec votre style existant */
+.calendar-container {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  overflow: hidden; /* Important pour les bordures arrondies */
+}
+
+/* Styles pour le calendrier à l'intérieur */
+::ng-deep .calendar-container .fc {
+  border: none !important;
+}
+
+::ng-deep .calendar-container .fc-toolbar {
+  margin-bottom: 0 !important;
+}
+
+::ng-deep .calendar-container .fc-view-harness {
+  margin: 0 !important;
+}
+.calendar-scroll-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  width: 100%;
+}
+
+::ng-deep .fc-resource-cell {
+  min-width: 120px; /* Ajuste cette valeur selon l’espace que tu veux par agent */
+}
+
+::ng-deep .fc-col-header-cell {
+  min-width: 120px;
+}
+
+::ng-deep .fc-timegrid-col {
+  min-width: 120px;
+}
+.calendar-scroll-wrapper {
+  overflow-x: auto;
+  white-space: nowrap;
+  width: 100%;
+  padding-bottom: 10px; /* pour dégager un peu le bas */
+}
+
+/* Étendre les colonnes agents et heures */
+::ng-deep .fc-resource-cell,
+::ng-deep .fc-timegrid-col,
+::ng-deep .fc-col-header-cell {
+  min-width: 150px !important;
+  max-width: 200px;
+  text-align: center;
+}
+
+/* Réduire la taille des textes si besoin */
+::ng-deep .fc-event-title {
+  font-size: 0.75rem;
+}
+
+::ng-deep .fc-timegrid-event {
+  min-height: 20px;
+}
+::ng-deep .fc-scrollgrid {
+  min-width: 1200px; /* Forcer une largeur globale plus généreuse */
+}
+
+::ng-deep .fc-timegrid {
+  display: inline-block;
+  min-width: 1000px; /* Plus de largeur pour le grid des heures */
+}
+
+::ng-deep .fc .fc-scroller-harness {
+  overflow-x: auto !important;
+}
+.calendar-wrapper-outer {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.calendar-wrapper-inner {
+  min-width: 1800px; /* force l’élargissement du calendrier */
+  display: inline-block;
+}
+
+::ng-deep .fc-resource-cell,
+::ng-deep .fc-col-header-cell,
+::ng-deep .fc-timegrid-col {
+  min-width: 160px !important;
+  text-align: center;
+}
+
