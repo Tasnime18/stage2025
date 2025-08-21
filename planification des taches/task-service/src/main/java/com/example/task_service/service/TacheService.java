@@ -20,6 +20,9 @@ public class TacheService {
     }
 
     public Tache createTache(Tache tache) {
+        if (tache.getEtat() == null || tache.getEtat().isEmpty()) {
+            tache.setEtat("A faire");
+    }
         return tacheRepository.save(tache);
     }
 

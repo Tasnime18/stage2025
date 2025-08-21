@@ -29,11 +29,11 @@ private apiUrl = 'http://localhost:8080/api/users';
     return this.http.get<Compte[]>(`${this.apiUrl}/all`);
   }
   add(compte: Compte): Observable<any> {
-    return this.http.post(`${this.apiUrl}/add`, compte);
+    return this.http.post(`${this.apiUrl}/add`, compte, { responseType: 'text' });
   }
 
   update(id: number, compte: Compte): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}`, compte);
+    return this.http.put(`${this.apiUrl}/${id}`, compte, { responseType: 'text' });
   }
 
   delete(id: number): Observable<any> {

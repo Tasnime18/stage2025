@@ -92,7 +92,7 @@ public ResponseEntity<List<TacheDTO>> getMesTaches(@RequestAttribute("userId") L
                 return ResponseEntity.status(403).body("Accès refusé");
             }
             tacheService.deleteTache(id);
-            return ResponseEntity.ok("Tâche supprimée");
+            return ResponseEntity.ok().build();
         }).orElse(ResponseEntity.notFound().build());
     }
 }

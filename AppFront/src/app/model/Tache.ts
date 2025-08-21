@@ -6,4 +6,5 @@ export interface Tache {
   dureeEnHeures: number;
   priorite: string;
   agentId: number | null;
+  etat: string;
 }

@@ -36,6 +36,16 @@ export class DetailsTacheDialogComponent {
   onDelete(): void {
     this.dialogRef.close({ action: 'delete', tache: this.tache });
   }
+
+    cycleEtat(): void {
+  const etats = ["A faire", "En cours", "Terminée"];
+  const index = etats.indexOf(this.tache.etat);
+  this.tache.etat = etats[(index + 1) % etats.length];
+}
+
+setEtat(etat: string): void {
+  this.tache.etat = etat;
+}
   
 
 }

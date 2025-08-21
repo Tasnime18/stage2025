@@ -10,6 +10,7 @@ public class TacheDTO {
     private int dureeEnHeures;
     private String priorite;
     private Long agentId;
+    private String etat;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -31,4 +32,7 @@ public class TacheDTO {
 
     public Long getAgentId() { return agentId; }
     public void setAgentId(Long agentId) { this.agentId = agentId; }
+
+    public String getEtat() { return etat;}
+    public void setEtat(String etat) { this.etat = etat;}
 }

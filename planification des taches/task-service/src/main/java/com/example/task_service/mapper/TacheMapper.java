@@ -14,6 +14,7 @@ public class TacheMapper {
         t.setDureeEnHeures(dto.getDureeEnHeures());
         t.setPriorite(dto.getPriorite());
         t.setAgentId(dto.getAgentId());
+        t.setEtat(dto.getEtat());
         return t;
     }
 
@@ -26,6 +27,7 @@ public class TacheMapper {
         dto.setDureeEnHeures(t.getDureeEnHeures());
         dto.setPriorite(t.getPriorite());
         dto.setAgentId(t.getAgentId());
+        dto.setEtat(t.getEtat());
         return dto;
     }
 }

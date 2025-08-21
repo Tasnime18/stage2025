@@ -1,66 +1,118 @@
-<div class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-  <div class="bg-white text-gray-800 p-8 rounded-xl shadow-lg w-full max-w-3xl h-[600px] overflow-y-auto">
+<!-- Modal Détails Tâche - Version compacte & moderne -->
+<div class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 animate-fade-in">
+  <div class="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-2xl transform transition-all animate-scale-in">
 
-    <h2 class="text-3xl font-semibold mb-6 text-indigo-600">Détails de la tâche</h2>
-
-    <!-- Titre -->
-    <div class="mb-5">
-      <label class="block text-sm font-medium text-gray-700 mb-2">Titre :</label>
-      <input type="text"
-             [(ngModel)]="tache.titre"
-             [readonly]="!estProprietaire"
-             class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-5">
+      <h2 class="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-purple-700">
+        Détails de la tâche
+      </h2>
+      <button (click)="cancel()" class="text-gray-400 hover:text-gray-600 text-lg transition" aria-label="Fermer">
+        <i class="fas fa-times"></i>
+      </button>
     </div>
 
-    <!-- Description -->
-    <div class="mb-5">
-      <label class="block text-sm font-medium text-gray-700 mb-2">Description :</label>
-      <textarea [(ngModel)]="tache.description"
-                [readonly]="!estProprietaire"
-                rows="5"
-                class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-400"></textarea>
+    <!-- État actuel -->
+    <div class="mb-4">
+      <span class="text-sm font-semibold text-gray-700">État :</span>
+      <span
+        class="ml-2 px-2.5 py-1 rounded-full text-white text-xs font-medium"
+        [ngClass]="{
+          'bg-gray-400': tache.etat === 'A faire',
+          'bg-yellow-500': tache.etat === 'En cours',
+          'bg-green-600': tache.etat === 'Terminée'
+        }"
+      >
+        {{ tache.etat }}
+      </span>
     </div>
 
-    <!-- Durée -->
-    <div class="mb-5">
-      <label class="block text-sm font-medium text-gray-700 mb-2">Durée (en heures) :</label>
-      <input type="number"
-             [(ngModel)]="tache.dureeEnHeures"
-             [readonly]="!estProprietaire"
-             class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+    <!-- Sélecteur d'état (visible seulement si propriétaire) -->
+    <div *ngIf="estProprietaire" class="flex flex-wrap gap-4 mb-5 text-xs">
+      <div class="flex items-center space-x-2">
+        <span class="text-gray-700">À faire</span>
+        <button (click)="setEtat('A faire')" class="w-5 h-5 rounded-full border"
+          [ngClass]="{'border-gray-400 bg-gray-300': tache.etat === 'A faire', 'border-gray-300 hover:border-gray-400': tache.etat !== 'A faire'}"></button>
+      </div>
+      <div class="flex items-center space-x-2">
+        <span class="text-gray-700">En cours</span>
+        <button (click)="setEtat('En cours')" class="w-5 h-5 rounded-full border"
+          [ngClass]="{'border-yellow-500 bg-yellow-400': tache.etat === 'En cours', 'border-yellow-300 hover:border-yellow-500': tache.etat !== 'En cours'}"></button>
+      </div>
+      <div class="flex items-center space-x-2">
+        <span class="text-gray-700">Terminée</span>
+        <button (click)="setEtat('Terminée')" class="w-5 h-5 rounded-full border"
+          [ngClass]="{'border-green-600 bg-green-500': tache.etat === 'Terminée', 'border-green-300 hover:border-green-600': tache.etat !== 'Terminée'}"></button>
+      </div>
     </div>
 
-    <!-- Priorité -->
-    <div class="mb-5">
-      <label class="block text-sm font-medium text-gray-700 mb-2">Priorité :</label>
-      <select [(ngModel)]="tache.priorite"
-              [disabled]="!estProprietaire"
-              class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-400">
-        <option value="FAIBLE">Faible</option>
-        <option value="MOYENNE">Moyenne</option>
-        <option value="HAUTE">Haute</option>
-      </select>
+    <!-- Grille compacte -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+      <!-- Titre -->
+      <div class="md:col-span-2 space-y-1">
+        <label class="text-xs font-medium text-gray-700">📝 Titre</label>
+        <input 
+          type="text"
+          [(ngModel)]="tache.titre"
+          [readonly]="!estProprietaire"
+          class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-sm" />
+      </div>
+
+      <!-- Description -->
+      <div class="md:col-span-2 space-y-1">
+        <label class="text-xs font-medium text-gray-700">📄 Description</label>
+        <textarea 
+          [(ngModel)]="tache.description"
+          [readonly]="!estProprietaire"
+          rows="2"
+          class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm resize-none"></textarea>
+      </div>
+
+      <!-- Durée -->
+      <div class="space-y-1">
+        <label class="text-xs font-medium text-gray-700">⏱️ Durée (h)</label>
+        <input 
+          type="number"
+          [(ngModel)]="tache.dureeEnHeures"
+          [readonly]="!estProprietaire"
+          class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-sm" />
+      </div>
+
+      <!-- Priorité -->
+      <div class="space-y-1">
+        <label class="text-xs font-medium text-gray-700">⚠️ Priorité</label>
+        <select 
+          [(ngModel)]="tache.priorite"
+          [disabled]="!estProprietaire"
+          class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm">
+          <option value="FAIBLE">🟢 Faible</option>
+          <option value="MOYENNE">🟡 Moyenne</option>
+          <option value="HAUTE">🔴 Haute</option>
+        </select>
+      </div>
+
     </div>
 
     <!-- Boutons -->
-    <div class="flex justify-end space-x-4 mt-4">
-      <button *ngIf="estProprietaire"
-              (click)="save()"
-              class="flex items-center px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-medium shadow-md hover:scale-[1.02] transition-transform">
-        Modifier
-      </button>
-
-      <button *ngIf="estProprietaire"
-              (click)="delete()"
-              class="px-4 py-2 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-medium rounded-lg flex items-center justify-center space-x-2 transition transform hover:scale-105 shadow">
-        Supprimer
-      </button>
-
-      <button (click)="cancel()"
-              class="px-6 py-2 rounded-md bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold">
+    <div class="flex justify-end space-x-2 mt-6 pt-4 border-t border-gray-200">
+      <button 
+        (click)="cancel()"
+        class="px-4 py-2 bg-gray-400 hover:bg-gray-500 text-white text-sm font-medium rounded-lg transition">
         Annuler
       </button>
+      <button 
+        *ngIf="estProprietaire"
+        (click)="delete()"
+        class="px-4 py-2 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white text-sm font-medium rounded-lg shadow-sm transition transform hover:scale-105 flex items-center gap-1">
+        <i class="fas fa-trash-alt text-xs"></i> Suppr
+      </button>
+      <button 
+        *ngIf="estProprietaire"
+        (click)="save()"
+        class="px-4 py-2 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white text-sm font-semibold rounded-lg shadow transition transform hover:scale-105 flex items-center gap-1">
+        <i class="fas fa-save text-xs"></i> Enregistrer
+      </button>
     </div>
-
   </div>
 </div>

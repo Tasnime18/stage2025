@@ -36,7 +36,12 @@ public class UserController {
     }
 
         if (passwordEncoder.matches(userDto.getMotdepasse(), utilisateur.getMotdepasse())) {
-            String token = jwtUtil.generateToken(utilisateur.getMail(), utilisateur.getRole(), utilisateur.getId());
+            String token = jwtUtil.generateToken(
+            utilisateur.getNom(),          
+            utilisateur.getRole(),     
+            utilisateur.getId(),        
+            utilisateur.getPrenom(),        
+            utilisateur.getMail()); 
             return new JwtResponseDTO(token);
         } else {
             throw new RuntimeException("Mot de passe invalide");

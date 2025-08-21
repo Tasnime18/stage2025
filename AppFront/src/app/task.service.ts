@@ -6,10 +6,11 @@ export interface Tache {
   id?: number;
   titre: string;
   description: string;
-  dateDebut: string; // ISO format
+  dateDebut: string; 
   dureeEnHeures: number;
   priorite: string;
   agentId: number | null;
+  etat:string;
 }
 
 
@@ -49,11 +50,20 @@ private baseUrl = 'http://localhost:8083/taches';
   return this.http.post<any>(this.baseUrl, tache, { headers });
 }
 updateTache(tache: Tache): Observable<any> {
-  return this.http.put(`${this.baseUrl}/${tache.id}`, tache);
+  const tacheModifiee = {
+    ...tache,
+    dateDebut: new Date(tache.dateDebut).toISOString() 
+  };
+
+  return this.http.put<any>(
+    `${this.baseUrl}/${tache.id}`,
+    tacheModifiee,
+    { headers: this.getAuthHeaders() } 
+  );
 }
 
-deleteTache(id: number): Observable<any> {
-  return this.http.delete(`${this.baseUrl}/${id}`,{ responseType: 'text' });
+deleteTache(id: number): Observable<void> {
+  return this.http.delete<void>(`${this.baseUrl}/${id}`);
 }
 
 getTachesFiltres(params: any): Observable<Tache[]> {

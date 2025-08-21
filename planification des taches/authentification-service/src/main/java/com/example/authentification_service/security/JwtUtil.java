@@ -54,11 +54,13 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(String nom, String role, Long id) {
+    public String generateToken(String nom, String role, Long id,String prenom, String email) {
         return Jwts.builder()
-                .setSubject(nom)
-                .claim("Id", id)
-                .claim("role", role)
+        .setSubject(email)                
+        .claim("Id", id)
+        .claim("role", role)
+        .claim("nom", nom)               
+        .claim("prenom", prenom)  
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) 
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)

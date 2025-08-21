@@ -12,6 +12,7 @@ interface Tache {
   dureeEnHeures: number;
   priorite: string;
   agentId: number;
+  etat: string;
 }
 
 @Component({
@@ -24,6 +25,7 @@ interface Tache {
 export class DetailsTacheAgentDialogComponent {
   tache: Tache;
   estProprietaire: boolean;
+  
 
   constructor(
     public dialogRef: MatDialogRef<DetailsTacheAgentDialogComponent>,
@@ -46,5 +48,18 @@ export class DetailsTacheAgentDialogComponent {
   cancel(): void {
     this.dialogRef.close();
   }
+
+  cycleEtat(): void {
+  const etats = ["A faire", "En cours", "Terminée"];
+  const index = etats.indexOf(this.tache.etat);
+  this.tache.etat = etats[(index + 1) % etats.length];
+}
+
+setEtat(etat: string): void {
+  this.tache.etat = etat;
+}
+
+
+
 }
 

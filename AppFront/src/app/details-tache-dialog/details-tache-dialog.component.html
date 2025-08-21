@@ -1,72 +1,135 @@
-<div class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-  <div class="bg-white text-gray-800 p-8 rounded-xl shadow-lg w-full max-w-3xl h-[600px] overflow-y-auto">
+<!-- Modal Détails Tâche - Version compacte -->
+<div class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 animate-fade-in">
+  <div class="bg-white text-gray-800 p-6 rounded-2xl shadow-2xl w-full max-w-2xl transform transition-all animate-scale-in">
 
-    <h2 class="text-3xl font-semibold mb-6 text-indigo-600">Détails de la tâche</h2>
-
-    <!-- Titre -->
-    <div class="mb-5">
-      <label class="block text-sm font-medium text-gray-700 mb-2">Titre :</label>
-      <input [(ngModel)]="tache.titre"
-             class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-             placeholder="Ex: Implémenter l'intercepteur HTTP pour ajouter le JWT" />
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-5">
+      <h2 class="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-purple-700">
+        Modifier la tâche
+      </h2>
+      <button (click)="onClose()" class="text-gray-400 hover:text-gray-600 text-lg transition">
+        <i class="fas fa-times"></i>
+      </button>
     </div>
 
-    <!-- Description -->
-    <div class="mb-5">
-      <label class="block text-sm font-medium text-gray-700 mb-2">Description :</label>
-      <textarea [(ngModel)]="tache.description" rows="5"
-                class="w-full px-4 py-3 rounded-lg border border-gray-300 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                placeholder="Détaillez les objectifs ou étapes..."></textarea>
+    <!-- État actuel -->
+    <div class="mb-4">
+      <span class="text-sm font-semibold text-gray-700">État :</span>
+      <span
+        class="ml-2 px-2.5 py-1 rounded-full text-white text-xs font-medium"
+        [ngClass]="{
+          'bg-gray-400': tache.etat === 'A faire',
+          'bg-yellow-500': tache.etat === 'En cours',
+          'bg-green-600': tache.etat === 'Terminée'
+        }"
+      >
+        {{ tache.etat }}
+      </span>
     </div>
 
-    <!-- Date de début -->
-    <div class="mb-5">
-      <label class="block text-sm font-medium text-gray-700 mb-2">Date de début :</label>
-      <input type="datetime-local" [(ngModel)]="tache.dateDebut"
-             class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+    <!-- Sélecteur d'état -->
+    <div class="flex flex-wrap gap-4 mb-5 text-xs">
+      <div class="flex items-center space-x-2">
+        <span class="text-gray-700">À faire</span>
+        <button (click)="setEtat('A faire')" class="w-5 h-5 rounded-full border"
+          [ngClass]="{'border-gray-400 bg-gray-300': tache.etat === 'A faire', 'border-gray-300 hover:border-gray-400': tache.etat !== 'A faire'}"></button>
+      </div>
+      <div class="flex items-center space-x-2">
+        <span class="text-gray-700">En cours</span>
+        <button (click)="setEtat('En cours')" class="w-5 h-5 rounded-full border"
+          [ngClass]="{'border-yellow-500 bg-yellow-400': tache.etat === 'En cours', 'border-yellow-300 hover:border-yellow-500': tache.etat !== 'En cours'}"></button>
+      </div>
+      <div class="flex items-center space-x-2">
+        <span class="text-gray-700">Terminée</span>
+        <button (click)="setEtat('Terminée')" class="w-5 h-5 rounded-full border"
+          [ngClass]="{'border-green-600 bg-green-500': tache.etat === 'Terminée', 'border-green-300 hover:border-green-600': tache.etat !== 'Terminée'}"></button>
+      </div>
     </div>
 
-    <!-- Durée -->
-    <div class="mb-5">
-      <label class="block text-sm font-medium text-gray-700 mb-2">Durée (heures) :</label>
-      <input type="number" [(ngModel)]="tache.dureeEnHeures"
-             class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
-    </div>
+    <!-- Grille compacte -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-    <!-- Priorité -->
-    <div class="mb-5">
-      <label class="block text-sm font-medium text-gray-700 mb-2">Priorité :</label>
-      <select [(ngModel)]="tache.priorite"
-              class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400">
-        <option>Haute</option>
-        <option>Moyenne</option>
-        <option>Basse</option>
-      </select>
-    </div>
+      <!-- Titre -->
+      <div class="md:col-span-2 space-y-1">
+        <label class="text-xs font-medium text-gray-700">📝 Titre</label>
+        <input 
+          [(ngModel)]="tache.titre"
+          class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-sm"
+          placeholder="Titre" />
+      </div>
 
-    <!-- Agent -->
-    <div class="mb-6">
-      <label for="user" class="block text-sm font-medium text-gray-700 mb-2">Affecter à :</label>
-      <select id="user" [(ngModel)]="data.tache.agentId"
-              class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400">
-        <option *ngFor="let user of users" [value]="user.id">
-          {{ user.nom }} {{ user.prenom }}
-        </option>
-      </select>
+      <!-- Description -->
+      <div class="md:col-span-2 space-y-1">
+        <label class="text-xs font-medium text-gray-700">📄 Description</label>
+        <textarea 
+          [(ngModel)]="tache.description" 
+          rows="2"
+          class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm resize-none"
+          placeholder="Description"></textarea>
+      </div>
+
+      <!-- Date de début -->
+      <div class="space-y-1">
+        <label class="text-xs font-medium text-gray-700">📅 Début</label>
+        <input 
+          type="datetime-local" 
+          [(ngModel)]="tache.dateDebut"
+          class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-sm" />
+      </div>
+
+      <!-- Durée -->
+      <div class="space-y-1">
+        <label class="text-xs font-medium text-gray-700">⏱️ Durée (h)</label>
+        <input 
+          type="number" 
+          [(ngModel)]="tache.dureeEnHeures"
+          class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm" />
+      </div>
+
+      <!-- Priorité -->
+      <div class="space-y-1">
+        <label class="text-xs font-medium text-gray-700">⚠️ Priorité</label>
+        <select 
+          [(ngModel)]="tache.priorite"
+          class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-sm">
+          <option>Haute</option>
+          <option>Moyenne</option>
+          <option>Basse</option>
+        </select>
+      </div>
+
+      <!-- Agent -->
+      <div class="space-y-1">
+        <label class="text-xs font-medium text-gray-700">👤 Agent</label>
+        <select 
+          [(ngModel)]="tache.agentId"
+          class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm">
+          <option value="">Sélectionner</option>
+          <option *ngFor="let user of users" [value]="user.id">
+            {{ user.nom }} {{ user.prenom }}
+          </option>
+        </select>
+      </div>
+
     </div>
 
     <!-- Boutons -->
-    <div class="flex justify-end space-x-4 mt-4">
-      <button (click)="onSave()"class="flex items-center p-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-medium shadow-md">
-        Modifier
-      </button>
-      <button (click)="onDelete()" class="w-full px-3 py-2 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-medium rounded-lg flex items-center justify-center space-x-2 transition transform hover:scale-105 shadow">
-        Supprimer
-      </button>
-      <button (click)="onClose()" class="px-6 py-2 rounded-md bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold">
+    <div class="flex justify-end space-x-2 mt-6 pt-4 border-t border-gray-200">
+      <button 
+        (click)="onClose()"
+        class="px-4 py-2 bg-gray-400 hover:bg-gray-500 text-white text-sm font-medium rounded-lg transition">
         Annuler
       </button>
+      <button 
+        (click)="onDelete()"
+        class="px-4 py-2 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white text-sm font-medium rounded-lg shadow-sm transition transform hover:scale-105 flex items-center gap-1">
+        <i class="fas fa-trash-alt text-xs"></i> Suppr
+      </button>
+      <button 
+        (click)="onSave()"
+        class="px-4 py-2 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white text-sm font-semibold rounded-lg shadow transition transform hover:scale-105 flex items-center gap-1">
+        <i class="fas fa-save text-xs"></i> Enregistrer
+      </button>
     </div>
-
   </div>
 </div>

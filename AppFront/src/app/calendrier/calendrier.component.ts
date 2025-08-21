@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarOptions, EventInput } from '@fullcalendar/core';
-import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { Tache, TaskService } from '../task.service';
 import { FormsModule } from '@angular/forms';
@@ -13,7 +12,8 @@ import { Compte, UserService } from '../user.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DetailsTacheDialogComponent } from '../details-tache-dialog/details-tache-dialog.component';
 import { catchError, EMPTY, Observable, tap } from 'rxjs';
-import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
+import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
+
 
 interface EventInputWithClassNames extends EventInput {
   classNames?: string[];
@@ -47,40 +47,129 @@ export class CalendrierComponent implements OnInit {
     dateDebutEnd: ''
   };
 
+userName: string = 'Chargement...';
+userPrenom: string = '';
+userNom: string = '';
+role: string | null = '';
+userId: number | null = null;
 
-  users: Compte[] = [];
+users: Compte[] = [];
 
 calendarOptions: CalendarOptions = {
-  plugins: [resourceTimeGridPlugin, dayGridPlugin, interactionPlugin],
-  initialView: 'resourceTimeGridTwoWeek',
-  editable: true, 
+  plugins: [resourceTimelinePlugin, interactionPlugin],
+  initialView: 'resourceTimelineThreeWeek',
+  editable: true,
   droppable: true,
   resources: [],
   views: {
-    resourceTimeGridTwoWeek: {
-      type: 'resourceTimeGrid',
-      duration: { days: 14 },
-      buttonText: '2 semaines'
+    resourceTimelineThreeWeek: {
+      type: 'resourceTimeline',
+      duration: { days: 21 },
+      slotLabelFormat: [
+        {
+          week: 'numeric',
+          omitCommas: true
+        }
+      ],
+      buttonText: '3 semaines'
     }
   },
   headerToolbar: {
     left: 'prev,next today',
     center: 'title',
-    right: 'multiWeek,dayGridMonth'
+    right: 'resourceTimelineThreeWeek,dayGridMonth'
   },
   resourceAreaHeaderContent: 'Agents',
   events: [],
+
+  themeSystem: 'standard', // Permet de surcharger les styles
+
+  // Style des événements
+eventContent: (info) => {
+  const priorite = info.event.extendedProps['priorite'] as string;
+  const couleur = this.getCouleurParPriorite(priorite);
+  
+  const textColor = 
+    priorite === 'FAIBLE' ? '#065f46' : 
+    priorite === 'MOYENNE' ? '#7c2d12' : 
+    priorite === 'HAUTE' ? '#7f1d1d' : 
+    '#4b5563';
+
+  return {
+    html: `
+      <div style="
+        background: ${couleur};
+        color: ${textColor};
+        border-radius: 6px;
+        padding: 4px 8px;
+        font-size: 0.85em;
+        font-weight: 600;
+        text-align: center;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      ">
+        ${info.timeText ? `<span style="font-size:0.7em; opacity:0.8;">${info.timeText}</span><br/>` : ''}
+        <span>${info.event.title}</span>
+      </div>
+    `
+  };
+} ,
+
+  slotLabelContent: (arg) => {
+    const date = new Date(arg.date);
+    const day = date.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
+    const weekNumber = this.getWeekNumber(date);
+
+    if (date.getDay() === 1) {
+      return {
+        html: `
+          <div style="text-align:center; padding: 4px;">
+            <div style="font-weight:600; color:#1f2937;">${day}</div>
+            <div style="
+              background:#e0e0e0; 
+              color:#4b5563; 
+              border-radius:4px; 
+              padding:2px 6px; 
+              font-size:0.75em; 
+              font-weight:500; 
+              margin-top:4px;
+              display:inline-block;">
+              Semaine ${weekNumber}
+            </div>
+          </div>
+        `
+      };
+    }
+
+    return { 
+      html: `<div style="text-align:center; padding:4px; color:#4b5563; font-size:0.85em;">${day}</div>` 
+    };
+  },
+
+  resourceAreaWidth: '150px',
+  resourceLabelContent: (info) => {
+    return {
+      html: `
+        <div style="
+          font-weight:600; 
+          color:#1f2937; 
+          padding:8px; 
+          border-bottom:1px solid #e5e7eb;">
+          ${info.resource.title}
+        </div>
+      `
+    };
+  },
   eventClick: this.onEventClick.bind(this),
-  eventDrop: this.onEventDrop.bind(this) 
+  eventDrop: this.onEventDrop.bind(this),
+
+  dayHeaderFormat: { weekday: 'long' },
+  height: 'auto',
+  expandRows: true,
+  nowIndicator: true
 };
-@ViewChild('calendarScroll') calendarScroll!: ElementRef;
-
-scrollCalendar(direction: 'left' | 'right') {
-  const el = this.calendarScroll.nativeElement;
-  el.scrollLeft += direction === 'left' ? -200 : 200;
-}
-
-
 
   constructor(
     private taskService: TaskService,
@@ -94,6 +183,22 @@ scrollCalendar(direction: 'left' | 'right') {
     this.chargerTaches();
     this.loadUsers();
     this.refreshCalendar();
+
+    this.role = this.userService.getUserRole();
+  this.userId = this.userService.getUserId();
+
+  //Décoder le token pour obtenir le nom/prénom
+  const token = localStorage.getItem('token');
+  if (token) {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1])); // Décoder JWT
+      this.userPrenom = payload.prenom || 'Utilisateur';
+      this.userNom = payload.nom || '';
+      this.userName = `${this.userPrenom} ${this.userNom}`.trim();
+    } catch (e) {
+      console.error('Erreur lecture token:', e);
+      this.userName = 'Profil';
+    }}
   }
   reinitialiserFiltres(): void {
   this.filtres = {
@@ -104,6 +209,14 @@ scrollCalendar(direction: 'left' | 'right') {
   };
   this.chargerTaches().subscribe(() => this.refreshCalendar());
 }
+getCouleurParPriorite(priorite: string): string {
+  switch (priorite?.trim().toUpperCase()) {
+    case 'HAUTE':   return '#FFCCED';
+    case 'MOYENNE': return '#F9FFA6'; 
+    case 'FAIBLE':  return '#a7f3d0'; 
+    default:        return '#A6DDFF'; 
+  }
+}
 
   onEventClick(info: any): void {
     const tache: Tache = {
@@ -113,7 +226,8 @@ scrollCalendar(direction: 'left' | 'right') {
       dateDebut: info.event.start,
       dureeEnHeures: this.getDurationInHours(info.event.start, info.event.end),
       priorite: info.event.extendedProps.priorite,
-      agentId: info.event.extendedProps.agentId
+      agentId: info.event.extendedProps.agentId,
+      etat: info.event.extendedProps.etat 
     };
 
     this.openDetails(tache);
@@ -151,7 +265,7 @@ loadUsers() {
     this.users = data;
 
     this.calendarOptions.resources = this.users
-      .filter(agent => agent.id !== undefined && agent.role === 'USER') // <-- filtre rôle
+      .filter(agent => agent.id !== undefined && agent.role === 'USER')
       .map(agent => ({
         id: agent.id!.toString(),
         title: agent.nom
@@ -224,8 +338,6 @@ updateTache(tache: Tache) {
   });
 }
 
-
-
 deleteTache(id: number) {
   const token = localStorage.getItem('token');
   const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
@@ -289,6 +401,19 @@ this.http.get<Tache[]>('http://localhost:8083/taches/filtre', { params, headers 
     }
   });
 }
+getWeekNumber(date: Date): number {
+  const target = new Date(date.valueOf());
+  const dayNr = (date.getDay() + 6) % 7;
+  target.setDate(target.getDate() - dayNr + 3);
+  const firstThursday = target.valueOf();
+  target.setMonth(0, 1);
+  if (target.getDay() !== 4) {
+    target.setMonth(0, 1 + ((4 - target.getDay()) + 7) % 7);
+  }
+  const weekNumber = 1 + Math.ceil((firstThursday - target.valueOf()) / 604800000);
+  return weekNumber;
+}
+
 
 refreshCalendar() {
   this.taskService.getTaches().subscribe((tasks: Tache[]) => {
@@ -302,7 +427,8 @@ refreshCalendar() {
         id: task.id,
         description: task.description,
         priorite: task.priorite,
-        agentId: task.agentId
+        agentId: task.agentId,
+        etat: task.etat
       },
       classNames: [] as string[] 
     }));
@@ -361,6 +487,7 @@ onEventDrop(info: any) {
     dateDebut: info.event.start,
     dureeEnHeures: this.getDurationInHours(info.event.start, info.event.end),
     priorite: info.event.extendedProps.priorite,
+    etat: info.event.extendedProps.etat,
     agentId: info.event.getResources()[0]?.id ? parseInt(info.event.getResources()[0].id) : null
   };
 
@@ -390,12 +517,19 @@ onEventDrop(info: any) {
 navigatetouser(){
   this.router.navigate(['/compte'])
 }
+navigatetotache(){
+  this.router.navigate(['/tache'])
+}
 
   deconnexion() {
   localStorage.removeItem('token');
   this.router.navigate(['/login']).then(() => {
     window.location.reload(); 
   });
+}
+sidebarVisible: boolean = true;
+toggleSidebar(): void {
+  this.sidebarVisible = !this.sidebarVisible;
 }
  
 }
