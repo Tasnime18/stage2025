@@ -5,6 +5,7 @@ import { CalendrierComponent } from './calendrier/calendrier.component';
 import { UserComponent } from './user/user.component';
 import { TacheComponent } from './tache/tache.component';
 import { TacheAgentComponent } from './tache-agent/tache-agent.component';
+import { ServicesComponent } from './gestion-services/gestion-services.component';
 
 
 export const routes: Routes = [
@@ -14,5 +15,6 @@ export const routes: Routes = [
     {path: 'compte', component: UserComponent},
     {path: 'tache', component: TacheComponent},
     {path: 'tacheAgent', component: TacheAgentComponent},
+    {path: 'services', component: ServicesComponent},
     {path: '', redirectTo: 'login', pathMatch:'full'}
 ];

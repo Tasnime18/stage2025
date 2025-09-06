@@ -7,4 +7,8 @@ export interface Tache {
   priorite: string;
   agentId: number | null;
   etat: string;
+
+  codeColor?: string;
+  cadre?: boolean;
+  conteneur?: boolean;
 }

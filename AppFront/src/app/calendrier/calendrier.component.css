@@ -426,6 +426,610 @@ input:focus, textarea:focus, select:focus {
   border-color: #06b6d4 !important;
   outline: none;
 }
+.fc-event.conflict {
+  animation: pulse 1.5s infinite;
+}
 
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+.bg-select-arrow {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%239CA3AF' viewBox='0 0 16 16'%3e%3cpath d='M7.646 11.854a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 .708-.708L7 10.293l2.646-2.647a.5.5 0 0 1 .708.708l-3 3z'/%3e%3cpath d='M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0z'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1em;
+  padding-right: 2.5rem !important;
+  padding-left: 2.5rem;
+}
 
+select:focus {
+  outline: none;
+}
+/* ===== STYLES CALENDRIER MODERNISÉ ===== */
+
+/* Variables CSS pour la cohérence des couleurs */
+:root {
+  --primary-color: #6366f1;
+  --primary-light: #a5b4fc;
+  --primary-dark: #4f46e5;
+  --secondary-color: #8b5cf6;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --error-color: #ef4444;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+  --white: #ffffff;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --border-radius: 12px;
+  --border-radius-sm: 8px;
+  --border-radius-lg: 16px;
+}
+
+/* Container principal du calendrier */
+.fc {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+}
+
+/* Suppression complète de tous les cadres extérieurs et coins */
+.fc,
+.fc *,
+.fc-view-harness,
+.fc-view,
+.fc-scrollgrid,
+.fc-scrollgrid-section,
+.fc-scrollgrid-section-liquid,
+.fc-scrollgrid-section-body,
+.fc-scrollgrid-sync-table,
+.fc-col-header,
+.fc-timeline-header,
+.fc-timeline-body {
+  border: none !important;
+  outline: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Exception : garder les styles des événements */
+.fc-event,
+.fc-event * {
+  background: initial !important;
+  border: initial !important;
+  border-radius: initial !important;
+  box-shadow: initial !important;
+}
+
+/* Header du calendrier */
+.fc-header-toolbar {
+  background: linear-gradient(135deg, var(--white) 0%, var(--gray-50) 100%);
+  padding: 20px 24px;
+  border-bottom: 2px solid var(--gray-100);
+  margin: 0 !important;
+}
+
+.fc-toolbar-chunk {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Boutons du header */
+.fc-button {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%) !important;
+  border: none !important;
+  color: var(--white) !important;
+  padding: 10px 16px !important;
+  border-radius: var(--border-radius-sm) !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: var(--shadow-md) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.fc-button:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--shadow-lg) !important;
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-color) 100%) !important;
+}
+
+.fc-button:active {
+  transform: translateY(0) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.fc-button-active {
+  background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%) !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.fc-button:disabled {
+  background: var(--gray-300) !important;
+  color: var(--gray-500) !important;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+/* Titre du calendrier */
+.fc-toolbar-title {
+  font-size: 28px !important;
+  font-weight: 700 !important;
+  color: var(--gray-800) !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Zone des ressources (agents) */
+.fc-resource-timeline .fc-resource-area {
+  background: linear-gradient(135deg, var(--gray-50) 0%, var(--white) 100%);
+  border-right: 2px solid var(--gray-200);
+}
+
+.fc-resource-area-header {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%) !important;
+  color: var(--white) !important;
+  font-weight: 700 !important;
+  font-size: 16px !important;
+  padding: 16px !important;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  border-bottom: 2px solid var(--primary-dark);
+}
+
+/* Labels des ressources */
+.fc-resource-timeline .fc-resource {
+  border-bottom: 1px solid var(--gray-200);
+  transition: all 0.3s ease;
+}
+
+.fc-resource-timeline .fc-resource:hover {
+  background: linear-gradient(135deg, var(--primary-color)08 0%, var(--secondary-color)08 100%);
+  transform: translateX(2px);
+}
+
+/* Zone de timeline */
+.fc-timeline-header {
+  background: linear-gradient(135deg, var(--gray-50) 0%, var(--white) 100%);
+  border-bottom: 2px solid var(--gray-200);
+}
+
+.fc-timeline-slot {
+  border-right: 1px solid var(--gray-200);
+  transition: background-color 0.2s ease;
+}
+
+.fc-timeline-slot:hover {
+  background: var(--gray-50);
+}
+
+/* Headers des jours */
+.fc-col-header-cell {
+  background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-50) 100%);
+  border-bottom: 2px solid var(--gray-200);
+  border-right: 1px solid var(--gray-200);
+  padding: 12px 8px !important;
+}
+
+.fc-col-header-cell-cushion {
+  font-weight: 600 !important;
+  color: var(--gray-700) !important;
+  font-size: 14px !important;
+  text-transform: capitalize;
+}
+
+/* Slots de temps */
+.fc-timeline-slot-label {
+  padding: 8px 12px !important;
+  font-weight: 500 !important;
+  color: var(--gray-600) !important;
+  font-size: 13px !important;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+/* Indicateur "maintenant" */
+.fc-timeline-now-indicator-line {
+  background: var(--error-color) !important;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+  height: 3px !important;
+  z-index: 10;
+  border-radius: 2px;
+}
+
+.fc-timeline-now-indicator-arrow {
+  border-left-color: var(--error-color) !important;
+  border-width: 8px !important;
+  filter: drop-shadow(0 2px 4px rgba(239, 68, 68, 0.3));
+}
+
+/* Événements modernisés */
+.fc-event {
+  border: none !important;
+  border-radius: var(--border-radius-sm) !important;
+  padding: 0 !important;
+  margin: 2px 1px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  overflow: visible !important;
+  position: relative;
+}
+
+.fc-event:hover {
+  transform: translateY(-2px) scale(1.02) !important;
+  box-shadow: var(--shadow-lg) !important;
+  z-index: 1000 !important;
+}
+
+.fc-event:hover .modern-event {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Événements en conflit */
+.fc-event.conflict {
+  animation: pulse-warning 2s infinite;
+}
+
+@keyframes pulse-warning {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+}
+
+/* Style pour les événements conteneur */
+.modern-event {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  user-select: none;
+}
+
+.modern-event:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
+/* Scrollbars personnalisées */
+.fc-scrollgrid-section-body::-webkit-scrollbar,
+.fc-timeline-body::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.fc-scrollgrid-section-body::-webkit-scrollbar-track,
+.fc-timeline-body::-webkit-scrollbar-track {
+  background: var(--gray-100);
+  border-radius: 4px;
+}
+
+.fc-scrollgrid-section-body::-webkit-scrollbar-thumb,
+.fc-timeline-body::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+.fc-scrollgrid-section-body::-webkit-scrollbar-thumb:hover,
+.fc-timeline-body::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+}
+
+/* Grille du calendrier */
+.fc-scrollgrid {
+  border: none !important;
+  border-radius: 0 !important;
+  overflow: visible;
+  background: transparent !important;
+}
+
+/* Suppression des coins et bordures sur tous les éléments de grille */
+.fc-scrollgrid-section,
+.fc-scrollgrid-section-header,
+.fc-scrollgrid-section-body,
+.fc-scrollgrid-section-footer,
+.fc-col-header,
+.fc-daygrid-body,
+.fc-timeline-body,
+.fc-timeline-header {
+  border-radius: 0 !important;
+  border: none !important;
+  background: transparent !important;
+}
+
+.fc-scrollgrid-section-body {
+  border: none !important;
+}
+
+/* Lignes du calendrier */
+.fc-timeline-lane {
+  border-bottom: 1px solid var(--gray-200);
+  transition: background-color 0.2s ease;
+}
+
+.fc-timeline-lane:hover {
+  background: rgba(99, 102, 241, 0.03);
+}
+
+.fc-timeline-lane:nth-child(even) {
+  background: rgba(0, 0, 0, 0.01);
+}
+
+/* Vue mensuelle */
+.fc-dayGridMonth-view .fc-day-header {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  color: var(--white);
+  font-weight: 600;
+  padding: 12px 8px;
+  text-align: center;
+}
+
+.fc-dayGridMonth-view .fc-day {
+  border: 1px solid var(--gray-200);
+  transition: background-color 0.2s ease;
+}
+
+.fc-dayGridMonth-view .fc-day:hover {
+  background: var(--gray-50);
+}
+
+.fc-dayGridMonth-view .fc-day-today {
+  background: linear-gradient(135deg, var(--primary-color)10 0%, var(--secondary-color)10 100%) !important;
+}
+
+/* Responsivité */
+@media (max-width: 768px) {
+  .fc-toolbar-title {
+    font-size: 20px !important;
+  }
+  
+  .fc-button {
+    padding: 8px 12px !important;
+    font-size: 12px !important;
+  }
+  
+  .fc-resource-area {
+    min-width: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .fc-header-toolbar {
+    padding: 16px;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .fc-toolbar-chunk {
+    justify-content: center;
+  }
+  
+  .fc-toolbar-title {
+    font-size: 18px !important;
+    text-align: center;
+  }
+}
+
+/* Animations d'entrée */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fc {
+  animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Focus et accessibilité */
+.fc-button:focus,
+.fc-event:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* États de chargement */
+.fc.fc-loading {
+  position: relative;
+}
+
+.fc.fc-loading::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fc.fc-loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--gray-200);
+  border-top: 3px solid var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  z-index: 1001;
+}
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Amélioration du contraste pour l'accessibilité */
+@media (prefers-contrast: high) {
+  :root {
+    --gray-200: #d1d5db;
+    --gray-300: #9ca3af;
+    --primary-color: #4338ca;
+  }
+}
+
+/* Mode sombre (si nécessaire) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --gray-50: #1f2937;
+    --gray-100: #374151;
+    --gray-200: #4b5563;
+    --gray-800: #f9fafb;
+    --gray-900: #ffffff;
+    --white: #111827;
+  }
+  
+  .fc {
+    background: linear-gradient(135deg, var(--gray-900) 0%, var(--gray-800) 100%);
+  }
+}
+
+/* Tooltips personnalisés */
+.fc-event[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  top: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--gray-900);
+  color: var(--white);
+  padding: 6px 12px;
+  border-radius: var(--border-radius-sm);
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1001;
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  animation: fadeInTooltip 0.3s ease forwards;
+}
+
+@keyframes fadeInTooltip {
+  to { opacity: 1; }
+}
+/* Boutons de navigation (prev, next, today) */
+.fc-toolbar .fc-button {
+  font-size: 0.75rem !important;
+  padding: 0.25rem 0.5rem !important;
+  border-radius: 6px !important;
+  min-width: 32px !important;
+  height: 32px !important;
+  margin: 0 4px !important; /* Espacement entre les boutons */
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
+}
+
+.fc-toolbar .fc-button:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15) !important;
+}
+
+.fc-toolbar .fc-button-primary {
+  background: linear-gradient(90deg, #0ea5e9, #7c3aed) !important;
+  color: white !important;
+  border: none !important;
+  transition: all 0.2s ease !important;
+}
+
+.fc-toolbar .fc-button-primary:hover {
+  background: linear-gradient(90deg, #06b6d4, #8b5cf6) !important;
+}
+
+.fc-toolbar .fc-button-secondary {
+  background: #f3f4f6 !important;
+  color: #6b7280 !important;
+  border: 1px solid #e5e7eb !important;
+  transition: all 0.2s ease !important;
+}
+
+.fc-toolbar .fc-button-secondary:hover {
+  background: #e5e7eb !important;
+}
+
+/* Supprime les lignes sous chaque agent dans le resourceArea */
+.fc-resource-area .fc-resource-title {
+    border-bottom: none !important;  }
+
+select {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+/* Pour éviter que l'icône ne soit masquée par le texte */
+select {
+  padding-left: 3rem; /* Pour faire place à l'icône */
+  padding-right: 3rem;
+  background-image: none;
+}
+
+/* Si tu veux forcer la position de l'icône */
+.material-icons {
+  font-size: 16px;
+  line-height: 1;
+  color: #9ca3af;
+}
+/* Classe commune pour tous les champs de filtre */
+.filter-field {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5da;
+  border-radius: 1rem;
+  background-color: white;
+  color: #1f2937;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  transition: all 0.2s ease;
+}
+
+.filter-field:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Pour les inputs de type date */
+.filter-field[type="date"] {
+  appearance: none;
+  background-image: none;
+  padding-right: 3rem;
+}
+
+/* Pour les select */
+.filter-field.select {
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem;
+}
 

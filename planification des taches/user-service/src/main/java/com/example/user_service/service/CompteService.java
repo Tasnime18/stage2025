@@ -3,31 +3,48 @@ package com.example.user_service.service;
 import java.util.List;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
+import com.example.user_service.model.Service;
 
 import com.example.user_service.dto.CompteDTO;
 import com.example.user_service.model.Compte;
 import com.example.user_service.repository.CompteRepo;
+import com.example.user_service.repository.ServiceRepository;
 
-@Service
+@org.springframework.stereotype.Service
 public class CompteService {
     private final CompteRepo compteRepo;
     private final BCryptPasswordEncoder passwordEncoder;
-    public CompteService(CompteRepo compteRepo, BCryptPasswordEncoder passwordEncoder) {
+    private final ServiceRepository serviceRepository;
+    public CompteService(CompteRepo compteRepo, BCryptPasswordEncoder passwordEncoder, ServiceRepository serviceRepository) {
         this.compteRepo = compteRepo;
         this.passwordEncoder = passwordEncoder;
+        this.serviceRepository = serviceRepository;
     }
 
-    public Compte addCompte(CompteDTO dto) {
-        Compte compte = new Compte();
-        compte.setNom(dto.getNom());
-        compte.setPrenom(dto.getPrenom());
-        compte.setMail(dto.getMail());
-        compte.setMotdepasse(passwordEncoder.encode(dto.getMotdepasse()));
-        compte.setRole(dto.getRole());
+public Compte addCompte(CompteDTO dto) {
+    System.out.println("Reçu pour ajout : " + dto.getNom() + " " + dto.getMail() + " - serviceId=" + dto.getServiceId() + " - actif=" + dto.getActif());
 
-        return compteRepo.save(compte);
+    if (dto.getMotdepasse() == null || dto.getMotdepasse().isBlank()) {
+        throw new IllegalArgumentException("Mot de passe obligatoire");
     }
+
+    Compte compte = new Compte();
+    compte.setNom(dto.getNom());
+    compte.setPrenom(dto.getPrenom());
+    compte.setMail(dto.getMail());
+    compte.setMotdepasse(passwordEncoder.encode(dto.getMotdepasse()));
+    compte.setRole(dto.getRole());
+    compte.setActif(dto.getActif() != null ? dto.getActif() : true);
+
+    if (dto.getServiceId() != null) {
+        Service service = serviceRepository.findById(dto.getServiceId()).orElse(null);
+        if (service != null) {
+            compte.setService(service);
+        }
+    }
+
+    return compteRepo.save(compte);
+}
 
     public List<Compte> getUsers() {
         return compteRepo.findAll();
@@ -48,6 +65,16 @@ public class CompteService {
         if (compteDetails.getMotdepasse() != null && !compteDetails.getMotdepasse().isBlank()) {
             compte.setMotdepasse(passwordEncoder.encode(compteDetails.getMotdepasse()));
         }
+        if (compteDetails.getService() != null) {
+            Service service = serviceRepository.findById(compteDetails.getService().getId()).orElse(null);
+            if (service != null) {
+                compte.setService(service);
+            } else {
+                compte.setService(null); 
+            }
+        } else {
+            compte.setService(null); 
+        }
 
         return compteRepo.save(compte);
     }
@@ -67,6 +94,11 @@ public class CompteService {
     compteRepo.save(compte);
     return true;
 }
+
+public List<Compte> getUsersByServiceId(Long serviceId) {
+    return compteRepo.findByService_Id(serviceId);
+}
+
 
 }
 

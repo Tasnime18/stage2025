@@ -10,6 +10,8 @@ export interface Compte {
   motdepasse: string;
   role: string;
   actif?: boolean;
+  serviceId?: number;
+  nomService?: string;
 }
 
 
@@ -60,6 +62,9 @@ private apiUrl = 'http://localhost:8080/api/users';
 
 desactiver(id: number) {
   return this.http.put(`${this.apiUrl}/desactiver/${id}`, {}, { responseType: 'text' });
+}
+getByServiceId(serviceId: number): Observable<Compte[]> {
+  return this.http.get<Compte[]>(`${this.apiUrl}/by-service/${serviceId}`);
 }
 
 

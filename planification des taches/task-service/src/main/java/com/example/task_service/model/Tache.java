@@ -16,6 +16,8 @@ public class Tache {
     private String priorite;
     private Long agentId; // ID de l'utilisateur (agent ou admin) à qui la tâche est attribuée
 
+    
+
     @Column(nullable = false)
     private String etat = "A faire"; 
 

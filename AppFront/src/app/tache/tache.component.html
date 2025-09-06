@@ -7,7 +7,7 @@
     <!-- Logo/Header -->
     <div class="p-6 mb-6">
       <h2 class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-600 text-2xl font-extrabold flex items-center">
-        <i class="fas fa-calendar-alt mr-3 text-xl"></i>
+        <i class="material-icons mr-3 text-xl">event</i>
         TaskFlow
       </h2>
       <p class="text-gray-500 text-sm mt-1">Tableau de bord</p>
@@ -15,45 +15,46 @@
 
     <!-- Navigation Menu -->
     <nav class="px-3 space-y-2">
-      <a (click)="navigatetocalendar()" class="sidebar-active rounded-xl p-3 flex items-center font-medium">
-        <i class="fas fa-calendar-week mr-3"></i>
+      <a (click)="navigatetocalendar()" class="sidebar-active rounded-xl p-3 flex items-center font-medium cursor-pointer">
+        <i class="material-icons">event</i>
         <span>Calendrier</span>
       </a>
-      <a (click)="navigatetouser()" class="sidebar-inactive p-3 flex items-center rounded-lg transition">
-        <i class="fas fa-users mr-3 text-purple-600"></i>
+      <a (click)="navigatetouser()" class="sidebar-inactive p-3 flex items-center rounded-lg transition cursor-pointer">
+        <i class="material-icons text-purple-600">group</i>
         <span>Équipe</span>
       </a>
-      <a (click)="navigatetotache()" class="sidebar-inactive p-3 flex items-center rounded-lg transition">
-        <i class="fas fa-tasks mr-3 text-purple-600"></i>
+      <a (click)="navigatetotache()"
+         class="flex items-center p-3 rounded-lg text-gray-700 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-purple-50 hover:text-purple-800 hover:rounded-xl cursor-pointer transition-all duration-200">
+        <i class="material-icons text-purple-600 text-lg">checklist</i>
         <span>Tâches</span>
       </a>
     </nav>
 
-<!-- Boutons d'action sidebar -->
-<div class="px-6 mt-6 space-y-3">
-  <!-- Nouvelle Tâche -->
-  <button 
-    class="w-full px-4 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white font-semibold rounded-xl flex items-center justify-center space-x-2 shadow-lg transition-transform hover:scale-105"
-    (click)="openModal()">
-    <i class="fas fa-plus text-sm"></i>
-    <span class="text-sm font-medium">Nouvelle Tâche</span>
-  </button>
+    <!-- Boutons d'action sidebar -->
+    <div class="px-6 mt-6 space-y-3">
+      <!-- Nouvelle Tâche -->
+      <button 
+        class="w-full px-4 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white font-semibold rounded-xl flex items-center justify-center space-x-2 shadow-lg transition-transform hover:scale-105"
+        (click)="openModal()">
+        <i class="material-icons text-sm">add</i>
+        <span class="text-sm font-medium">Nouvelle Tâche</span>
+      </button>
 
-  <!-- Télécharger CSV -->
-  <button 
-    (click)="telechargerCSV()"
-    class="w-full px-4 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white font-semibold rounded-xl flex items-center justify-center space-x-2 shadow-lg transition-transform hover:scale-105">
-    <i class="fas fa-download text-sm"></i>
-    <span class="text-sm font-medium">Télécharger CSV</span>
-  </button>
-</div>
+      <!-- Télécharger CSV -->
+      <button 
+        (click)="telechargerCSV()"
+        class="w-full px-4 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white font-semibold rounded-xl flex items-center justify-center space-x-2 shadow-lg transition-transform hover:scale-105">
+        <i class="material-icons text-sm">download</i>
+        <span class="text-sm font-medium">Télécharger CSV</span>
+      </button>
+    </div>
 
     <!-- User Profile + Déconnexion (en bas) -->
     <div class="absolute bottom-6 left-6 right-6">
       <div class="bg-white/90 backdrop-blur-sm border border-gray-200/60 p-4 rounded-2xl shadow-sm">
         <div class="flex items-center space-x-3 mb-4">
           <div class="w-10 h-10 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full flex items-center justify-center">
-            <i class="fas fa-user text-white"></i>
+            <i class="material-icons text-white">person</i>
           </div>
           <div>
             <p class="text-gray-800 font-semibold text-sm">Bienvenue, {{ userPrenom }}</p>
@@ -62,9 +63,9 @@
           </div>
         </div>
         <button 
-          class="btn-danger w-full text-sm py-2"
+          class="w-full text-sm py-2 bg-red-500 hover:bg-red-600 text-white rounded-md transition"
           (click)="deconnexion()">
-          <i class="fas fa-sign-out-alt"></i>
+          <i class="material-icons">logout</i>
           <span>Déconnexion</span>
         </button>
       </div>
@@ -75,268 +76,320 @@
   <div [ngClass]="sidebarVisible ? 'ml-64' : 'ml-0'" class="transition-all duration-300 min-h-screen">
 
     <!-- Top Header Bar -->
-    <div class="bg-white/95 backdrop-blur-sm border-b border-gray-200/60 p-6 mb-6 shadow-sm">
-      <div class="flex justify-between items-center">
-        <div>
-          <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-800 to-gray-900">
-            Calendrier des Tâches
-          </h1>
-          <p class="text-gray-600">Organisez efficacement les tâches de votre équipe</p>
-        </div>
-        <button (click)="toggleSidebar()" class="text-gray-600 hover:text-purple-600 hover:bg-gray-100 p-2 rounded-full transition-all duration-200">
-          <i class="fas text-lg" [ngClass]="sidebarVisible ? 'fa-times' : 'fa-bars'">🟰</i>
-        </button>
-      </div>
+<div class="bg-gradient-to-br from-white via-white to-gray-50 backdrop-blur-sm border-b border-gray-200/60 p-4 mb-6 shadow-lg shadow-cyan-50/50">
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+
+    <!-- Titre et sous-titre -->
+    <div class="flex-1 min-w-0">
+      <h1 class="text-xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-cyan-600 via-purple-700 to-violet-800 tracking-tight">
+        Calendrier des Tâches
+      </h1>
+      <p class="text-gray-600 text-sm mt-0.5 flex items-center">
+        <i class="material-icons text-xs mr-1 text-cyan-500">check_circle</i>
+        Gérez et organisez les tâches de votre équipe
+      </p>
     </div>
-<!-- Filtres -->
+
+    <!-- Bloc Service + Charger -->
+    <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+      <!-- Select -->
+<!-- Select - Service -->
+<div class="relative">
+  <!-- Icône de recherche -->
+  <i class="material-icons absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm pointer-events-none">
+    search
+  </i>
+
+  <!-- Le select lui-même -->
+  <select
+    [(ngModel)]="filtres.serviceId"
+    class="w-full pl-10 pr-10 py-3 border border-gray-200 rounded-xl bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-cyan-500 shadow-sm appearance-none cursor-pointer transition-all duration-200 hover:shadow-md"
+    [class.bg-gradient-to-r]="true"
+    [class.from-cyan-50]="true"
+    [class.to-purple-50]="true"
+  >
+    <option value="">Tous les services</option>
+    <option *ngFor="let service of services" [value]="service.id">{{ service.nomService }}</option>
+  </select>
+
+  <!-- Flèche dropdown (facultatif) -->
+  <i class="material-icons absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm pointer-events-none">
+    arrow_drop_down
+  </i>
+</div>
+
+      <!-- Bouton Charger -->
+      <button 
+        *ngIf="filtres.serviceId"
+        (click)="chargerTachesParService()"
+        class="px-4 py-2 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white font-semibold rounded-lg shadow-md transition transform hover:scale-105 flex items-center justify-center gap-1 whitespace-nowrap">
+        <span>Charger</span>
+      </button>
+    </div>
+
+    <!-- Bouton toggle sidebar -->
+    <button 
+      (click)="toggleSidebar()" 
+      class="group text-gray-600 hover:text-purple-600 hover:bg-white/70 p-2 rounded-full transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-200 shadow-sm"
+      aria-label="Toggle sidebar">
+      <i class="material-icons text-base transition-transform duration-200 group-hover:rotate-90">
+        {{ sidebarVisible ? 'close' : 'menu' }}
+      </i>
+    </button>
+  </div>
+</div>
+
+    <!-- Filtres -->
 <div class="px-6 mb-6">
   <div class="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-2xl p-6 shadow-lg">
     <h3 class="text-gray-900 text-lg font-semibold mb-4 flex items-center">
-      <i class="fas fa-filter mr-2 text-cyan-600"></i>
+      <i class="material-icons mr-2 text-cyan-600">filter_alt</i>
       Filtres
     </h3>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
       <!-- Agent -->
-      <div class="space-y-2">
-        <label class="text-gray-700 text-sm font-medium block">Agent</label>
-        <select [(ngModel)]="filtres.agentId" (change)="appliquerFiltres()"
-                class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-cyan-500 shadow-sm transition">
-          <option value="">Tous</option>
-          <option *ngFor="let user of utilisateurs" [value]="user.id">
-            {{ user.prenom }} {{ user.nom }}
-          </option>
-        </select>
+      <div class="space-y-1">
+        <label class="text-gray-700 text-xs font-medium block">Agent</label>
+<select [(ngModel)]="filtres.agentId"
+        class="filter-field select">
+  <option value="">Tous</option>
+  <option *ngFor="let user of utilisateurs" [value]="user.id">
+    {{ user.prenom }} {{ user.nom }}
+  </option>
+</select>
       </div>
 
       <!-- Priorité -->
-      <div class="space-y-2">
-        <label class="text-gray-700 text-sm font-medium block">Priorité</label>
-        <select [(ngModel)]="filtres.priorite" (change)="appliquerFiltres()"
-                class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-sm">
-          <option value="">Toutes</option>
-          <option value="Haute">Haute</option>
-          <option value="Moyenne">Moyenne</option>
-          <option value="Basse">Basse</option>
-        </select>
+      <div class="space-y-1">
+        <label class="text-gray-700 text-xs font-medium block">Priorité</label>
+        <select [(ngModel)]="filtres.priorite"
+        class="filter-field select">
+  <option value="">Toutes</option>
+  <option value="FAIBLE">Faible</option>
+  <option value="MOYENNE">Moyenne</option>
+  <option value="HAUTE">Haute</option>
+</select>
       </div>
 
       <!-- Date début -->
-      <div class="space-y-2">
-        <label class="text-gray-700 text-sm font-medium block">Date début</label>
-        <input type="date" [(ngModel)]="filtres.dateDebutStart" (input)="appliquerFiltres()"
-               class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-cyan-500 shadow-sm">
+      <div class="space-y-1">
+        <label class="text-gray-700 text-xs font-medium block">Date début</label>
+        <input type="date"
+       [(ngModel)]="filtres.dateDebutStart"
+       (input)="appliquerFiltres()"
+       class="filter-field"
+       placeholder="jj/mm/aaaa">
       </div>
 
       <!-- Date fin -->
-      <div class="space-y-2">
-        <label class="text-gray-700 text-sm font-medium block">Date fin</label>
-        <input type="date" [(ngModel)]="filtres.dateDebutEnd" (input)="appliquerFiltres()"
-               class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-sm">
+      <div class="space-y-1">
+        <label class="text-gray-700 text-xs font-medium block">Date fin</label>
+        <input type="date"
+       [(ngModel)]="filtres.dateDebutEnd"
+       (input)="appliquerFiltres()"
+       class="filter-field"
+       placeholder="jj/mm/aaaa">
       </div>
     </div>
 
-    <!-- Boutons -->
+    <!-- Actions -->
     <div class="flex space-x-3">
-      <button (click)="appliquerFiltres()"
-              class="px-6 py-2 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white font-medium rounded-lg flex items-center space-x-2 shadow-lg transition transform hover:scale-105">
-        <i class="fas fa-search"></i>
+      <button (click)="appliquerFiltres()" class="px-6 py-2 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white font-medium rounded-lg flex items-center space-x-2 shadow-lg transition transform hover:scale-105">
+        <i class="material-icons">search</i>
         <span>Filtrer</span>
       </button>
-      <button (click)="reinitialiserFiltres()"
-              class="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white font-medium rounded-lg flex items-center space-x-2 shadow transition">
-        <i class="fas fa-refresh"></i>
+      <button (click)="reinitialiserFiltres()" class="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white font-medium rounded-lg flex items-center space-x-2 shadow transition">
+        <i class="material-icons">refresh</i>
         <span>Réinitialiser</span>
       </button>
     </div>
   </div>
 </div>
-<div class="px-6 mb-6">
-  <div class="bg-white/90 backdrop-blur-sm border border-gray-200 rounded-2xl shadow-xl overflow-hidden">
-    <div class="overflow-x-auto">
-      <table class="w-full border-collapse text-sm">
-        <thead class="bg-gradient-to-r from-cyan-50 to-purple-50 border-b border-gray-200">
-          <tr>
-            <th class="px-6 py-4 text-left font-semibold text-gray-700">Titre</th>
-            <th class="px-6 py-4 text-left font-semibold text-gray-700">Description</th>
-            <th class="px-6 py-4 text-left font-semibold text-gray-700">Date</th>
-            <th class="px-6 py-4 text-left font-semibold text-gray-700">Durée</th>
-            <th class="px-6 py-4 text-left font-semibold text-gray-700">Priorité</th>
-            <th class="px-6 py-4 text-left font-semibold text-gray-700">Agent</th>
-            <th class="px-6 py-4 text-left font-semibold text-gray-700">État</th>
-            <th class="px-6 py-4 text-left font-semibold text-gray-700">Actions</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-100">
-          <tr *ngFor="let tache of taches" class="hover:bg-gray-50 transition duration-150">
-            <td class="px-6 py-4 font-medium text-gray-800">{{ tache.titre }}</td>
-            <td class="px-6 py-4 text-gray-700 max-w-xs">
-              <div class="truncate cursor-help" [title]="tache.description">
-                {{ tache.description || '-' }}
-              </div>
-            </td>
-            <td class="px-6 py-4 text-gray-600">{{ tache.dateDebut | date:'dd/MM HH:mm' }}</td>
-            <td class="px-6 py-4 text-gray-600">{{ tache.dureeEnHeures }}h</td>
-            <td class="px-6 py-4">
-              <span [ngClass]="{
-                'bg-red-50 text-red-600': tache.priorite === 'Haute',
-                'bg-yellow-50 text-yellow-600': tache.priorite === 'Moyenne',
-                'bg-green-50 text-green-600': tache.priorite === 'Basse'
-              }" class="px-3 py-1 rounded-full text-xs font-semibold border border-gray-200">
-                {{ tache.priorite }}
-              </span>
-            </td>
-            <td class="px-6 py-4 text-gray-700">{{ getNomAgent(tache.agentId) }}</td>
-            <td class="px-6 py-4">
-              <span [ngClass]="{
-                'bg-blue-50 text-blue-600': tache.etat === 'A faire',
-                'bg-orange-50 text-orange-600': tache.etat === 'En cours',
-                'bg-green-50 text-green-600': tache.etat === 'Terminée'
-              }" class="px-3 py-1 rounded-full text-xs font-medium border border-gray-200">
-                {{ tache.etat }}
-              </span>
-            </td>
-            <td class="px-6 py-4">
-              <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:space-x-2">
-                <button (click)="openModal(tache)"
-                        class="px-3 py-1.5 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-md text-sm font-medium transition shadow-sm">
-                  <i class="fas fa-edit text-xs mr-1"></i> Modifier
-                </button>
-                <button (click)="deleteTache(tache.id!)"
-                        class="px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-700 rounded-md text-sm font-medium transition shadow-sm">
-                  <i class="fas fa-trash-alt text-xs mr-1"></i> Supprimer
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
 
-<!-- Modal -->
-<div *ngIf="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl flex flex-col" style="max-height: 90vh;">
-    
-    <!-- Header -->
-    <div class="p-6 border-b border-gray-200">
-      <h2 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-600 to-purple-700">
-        {{ isEdit ? 'Modifier' : 'Ajouter' }} une tâche
-      </h2>
+    <!-- Tableau des tâches -->
+    <div class="px-6 mb-6">
+      <div class="bg-white/90 backdrop-blur-sm border border-gray-200 rounded-2xl shadow-xl overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse text-sm">
+            <thead class="bg-gradient-to-r from-cyan-50 to-purple-50 border-b border-gray-200">
+              <tr>
+                <th class="px-6 py-4 text-left font-semibold text-gray-700">Titre</th>
+                <th class="px-6 py-4 text-left font-semibold text-gray-700">Description</th>
+                <th class="px-6 py-4 text-left font-semibold text-gray-700">Date</th>
+                <th class="px-6 py-4 text-left font-semibold text-gray-700">Durée</th>
+                <th class="px-6 py-4 text-left font-semibold text-gray-700">Priorité</th>
+                <th class="px-6 py-4 text-left font-semibold text-gray-700">Agent</th>
+                <th class="px-6 py-4 text-left font-semibold text-gray-700">État</th>
+                <th class="px-6 py-4 text-left font-semibold text-gray-700">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+              <tr *ngFor="let tache of taches" class="hover:bg-gray-50 transition duration-150">
+                <td class="px-6 py-4 font-medium text-gray-800">{{ tache.titre }}</td>
+                <td class="px-6 py-4 text-gray-700 max-w-xs">
+                  <div class="truncate cursor-help" [title]="tache.description">
+                    {{ tache.description || '-' }}
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-gray-600">{{ tache.dateDebut | date:'dd/MM HH:mm' }}</td>
+                <td class="px-6 py-4 text-gray-600">{{ tache.dureeEnHeures }}h</td>
+                <td class="px-6 py-4">
+                  <span [ngClass]="{
+                    'bg-red-50 text-red-600': tache.priorite === 'Haute',
+                    'bg-yellow-50 text-yellow-600': tache.priorite === 'Moyenne',
+                    'bg-green-50 text-green-600': tache.priorite === 'Basse'
+                  }" class="px-3 py-1 rounded-full text-xs font-semibold border border-gray-200">
+                    {{ tache.priorite }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-gray-700">{{ getNomAgent(tache.agentId) }}</td>
+                <td class="px-6 py-4">
+                  <span [ngClass]="{
+                    'bg-blue-50 text-blue-600': tache.etat === 'A faire',
+                    'bg-orange-50 text-orange-600': tache.etat === 'En cours',
+                    'bg-green-50 text-green-600': tache.etat === 'Terminée'
+                  }" class="px-3 py-1 rounded-full text-xs font-medium border border-gray-200">
+                    {{ tache.etat }}
+                  </span>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:space-x-2">
+                    <button (click)="openModal(tache)"
+                            class="px-3 py-1.5 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-md text-sm font-medium transition shadow-sm">
+                      <i class="material-icons text-xs mr-1">edit</i> Modifier
+                    </button>
+                    <button (click)="deleteTache(tache.id!)"
+                            class="px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-700 rounded-md text-sm font-medium transition shadow-sm">
+                      <i class="material-icons text-xs mr-1">delete</i> Supprimer
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
-    <!-- Form with scrollable body -->
-    <form (ngSubmit)="saveTache()" class="flex flex-col h-full">
-
-      <div class="p-6 flex-grow overflow-y-auto space-y-5" style="max-height: calc(90vh - 180px);">
+    <!-- Modal -->
+    <div *ngIf="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl flex flex-col" style="max-height: 90vh;">
         
-        <!-- Titre -->
-        <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-1">📝 Titre</label>
-          <input 
-            [(ngModel)]="selectedTache.titre" 
-            name="titre" 
-            placeholder="Ex: Réunion d'équipe" 
-            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none transition"
-            required />
+        <!-- Header -->
+        <div class="p-6 border-b border-gray-200">
+          <h2 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-600 to-purple-700">
+            {{ isEdit ? 'Modifier' : 'Ajouter' }} une tâche
+          </h2>
         </div>
 
-        <!-- Description -->
-        <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-1">📄 Description</label>
-          <textarea 
-            [(ngModel)]="selectedTache.description" 
-            name="description" 
-            placeholder="Détaillez la tâche..." 
-            rows="3" 
-            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none transition"
-            required></textarea>
-        </div>
+        <!-- Form -->
+        <form (ngSubmit)="saveTache()" class="flex flex-col h-full">
+          <div class="p-6 flex-grow overflow-y-auto space-y-5" style="max-height: calc(90vh - 180px);">
+            <!-- Titre -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Titre</label>
+              <input 
+                [(ngModel)]="selectedTache.titre" 
+                name="titre" 
+                placeholder="Ex: Réunion d'équipe" 
+                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none transition"
+                required />
+            </div>
 
-        <!-- Grid: Date + Durée -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-1">📅 Date de début</label>
-            <input 
-              [(ngModel)]="selectedTache.dateDebut" 
-              name="dateDebut" 
-              type="datetime-local" 
-              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none transition"
-              required />
+            <!-- Description -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Description</label>
+              <textarea 
+                [(ngModel)]="selectedTache.description" 
+                name="description" 
+                placeholder="Détaillez la tâche..." 
+                rows="3" 
+                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none transition"
+                required></textarea>
+            </div>
+
+            <!-- Date + Durée -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Date de début</label>
+                <input 
+                  [(ngModel)]="selectedTache.dateDebut" 
+                  name="dateDebut" 
+                  type="datetime-local" 
+                  class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none transition"
+                  required />
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Durée (heures)</label>
+                <input 
+                  [(ngModel)]="selectedTache.dureeEnHeures" 
+                  name="dureeEnHeures" 
+                  type="number" 
+                  placeholder="Ex: 2" 
+                  class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none transition"
+                  required />
+              </div>
+            </div>
+
+            <!-- Priorité + Agent -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Priorité</label>
+                <select 
+                  [(ngModel)]="selectedTache.priorite" 
+                  name="priorite" 
+                  class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none transition">
+                  <option value="Haute">Haute</option>
+                  <option value="Moyenne">Moyenne</option>
+                  <option value="Faible">Faible</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Agent</label>
+                <select 
+                  [(ngModel)]="selectedTache.agentId" 
+                  name="agentId" 
+                  class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none transition"
+                  required>
+                  <option value="">Sélectionner un agent</option>
+                  <option *ngFor="let user of utilisateurs" [value]="user.id">
+                    {{ user.nom }} {{ user.prenom }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <!-- État -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">État</label>
+              <select 
+                [(ngModel)]="selectedTache.etat" 
+                name="etat" 
+                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none transition">
+                <option value="A faire">À faire</option>
+                <option value="En cours">En cours</option>
+                <option value="Terminée">Terminée</option>
+              </select>
+            </div>
           </div>
 
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-1">⏱️ Durée (heures)</label>
-            <input 
-              [(ngModel)]="selectedTache.dureeEnHeures" 
-              name="dureeEnHeures" 
-              type="number" 
-              placeholder="Ex: 2" 
-              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none transition"
-              required />
+          <!-- Boutons -->
+          <div class="flex justify-end gap-3 p-6 bg-gray-50 rounded-b-2xl border-t border-gray-200">
+            <button 
+              type="button" 
+              class="px-5 py-2.5 bg-gray-400 hover:bg-gray-500 text-white font-medium rounded-lg transition"
+              (click)="closeModal()">
+              Annuler
+            </button>
+            <button 
+              type="submit" 
+              class="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white font-semibold rounded-lg shadow transition transform hover:scale-105">
+              {{ isEdit ? 'Mettre à jour' : 'Créer' }}
+            </button>
           </div>
-        </div>
-
-        <!-- Grid: Priorité + Agent -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-1">⚠️ Priorité</label>
-            <select 
-              [(ngModel)]="selectedTache.priorite" 
-              name="priorite" 
-              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none transition">
-              <option value="Haute">⚠️ Haute</option>
-              <option value="Moyenne">🟡 Moyenne</option>
-              <option value="Basse">🟢 Basse</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-1">👤 Agent</label>
-            <select 
-              [(ngModel)]="selectedTache.agentId" 
-              name="agentId" 
-              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none transition"
-              required>
-              <option value="">Sélectionner un agent</option>
-              <option *ngFor="let user of utilisateurs" [value]="user.id">
-                {{ user.nom }} {{ user.prenom }}
-              </option>
-            </select>
-          </div>
-        </div>
-
-        <!-- État -->
-        <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-1">🔁 État</label>
-          <select 
-            [(ngModel)]="selectedTache.etat" 
-            name="etat" 
-            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none transition">
-            <option value="A faire">🔵 À faire</option>
-            <option value="En cours">🟡 En cours</option>
-            <option value="Terminée">✅ Terminée</option>
-          </select>
-        </div>
-
+        </form>
       </div>
-
-      <!-- Boutons fixes en bas -->
-      <div class="flex justify-end gap-3 p-6 bg-gray-50 rounded-b-2xl border-t border-gray-200">
-        <button 
-          type="button" 
-          class="px-5 py-2.5 bg-gray-400 hover:bg-gray-500 text-white font-medium rounded-lg transition"
-          (click)="closeModal()">
-          Annuler
-        </button>
-        <button 
-          type="submit" 
-          class="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white font-semibold rounded-lg shadow transition transform hover:scale-105">
-          {{ isEdit ? 'Mettre à jour' : 'Créer' }}
-        </button>
-      </div>
-    </form>
+    </div>
   </div>
-</div>
 </div>

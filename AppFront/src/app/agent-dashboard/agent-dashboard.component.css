@@ -167,5 +167,64 @@ input:focus, textarea:focus, select:focus {
   border-color: #06b6d4 !important;
   outline: none;
 }
+/* Supprime les lignes sous chaque agent dans le resourceArea */
+.fc-resource-area .fc-resource-title {
+    border-bottom: none !important;
+}
+select {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+/* Pour éviter que l'icône ne soit masquée par le texte */
+select {
+  padding-left: 3rem; /* Pour faire place à l'icône */
+  padding-right: 3rem;
+  background-image: none;
+}
+
+/* Si tu veux forcer la position de l'icône */
+.material-icons {
+  font-size: 16px;
+  line-height: 1;
+  color: #9ca3af;
+}
+/* Classe commune pour tous les champs de filtre */
+.filter-field {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5da;
+  border-radius: 1rem;
+  background-color: white;
+  color: #1f2937;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  transition: all 0.2s ease;
+}
+
+.filter-field:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Pour les inputs de type date */
+.filter-field[type="date"] {
+  appearance: none;
+  background-image: none;
+  padding-right: 3rem;
+}
+
+/* Pour les select */
+.filter-field.select {
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem;
+}
+
 
 

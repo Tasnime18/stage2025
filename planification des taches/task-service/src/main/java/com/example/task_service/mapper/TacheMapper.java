@@ -28,6 +28,11 @@ public class TacheMapper {
         dto.setPriorite(t.getPriorite());
         dto.setAgentId(t.getAgentId());
         dto.setEtat(t.getEtat());
+
+        dto.setCodeColor(null); 
+        dto.setCadre(false);
+        dto.setConteneur(false);
+
         return dto;
     }
 }

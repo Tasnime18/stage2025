@@ -51,7 +51,7 @@
 
       <!-- Titre -->
       <div class="md:col-span-2 space-y-1">
-        <label class="text-xs font-medium text-gray-700">📝 Titre</label>
+        <label class="text-xs font-medium text-gray-700">Titre</label>
         <input 
           [(ngModel)]="tache.titre"
           class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-sm"
@@ -60,7 +60,7 @@
 
       <!-- Description -->
       <div class="md:col-span-2 space-y-1">
-        <label class="text-xs font-medium text-gray-700">📄 Description</label>
+        <label class="text-xs font-medium text-gray-700">Description</label>
         <textarea 
           [(ngModel)]="tache.description" 
           rows="2"
@@ -70,7 +70,7 @@
 
       <!-- Date de début -->
       <div class="space-y-1">
-        <label class="text-xs font-medium text-gray-700">📅 Début</label>
+        <label class="text-xs font-medium text-gray-700">Début</label>
         <input 
           type="datetime-local" 
           [(ngModel)]="tache.dateDebut"
@@ -79,7 +79,7 @@
 
       <!-- Durée -->
       <div class="space-y-1">
-        <label class="text-xs font-medium text-gray-700">⏱️ Durée (h)</label>
+        <label class="text-xs font-medium text-gray-700">Durée (h)</label>
         <input 
           type="number" 
           [(ngModel)]="tache.dureeEnHeures"
@@ -88,13 +88,13 @@
 
       <!-- Priorité -->
       <div class="space-y-1">
-        <label class="text-xs font-medium text-gray-700">⚠️ Priorité</label>
+        <label class="text-xs font-medium text-gray-700">Priorité</label>
         <select 
           [(ngModel)]="tache.priorite"
           class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-sm">
           <option>Haute</option>
           <option>Moyenne</option>
-          <option>Basse</option>
+          <option>Faible</option>
         </select>
       </div>
 

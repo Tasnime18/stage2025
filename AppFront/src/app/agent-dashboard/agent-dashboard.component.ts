@@ -14,6 +14,8 @@ import { TaskService } from '../task.service';
 import { Compte, UserService } from '../user.service';
 import { Tache } from '../model/Tache';
 import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
+import { Service } from '../model/service.model';
+import { ServiceService } from '../service.service';
 
 interface EventInputWithClassNames extends EventInput {
   classNames?: string[];
@@ -32,6 +34,7 @@ export class AgentDashboardComponent {
   taches: Tache[] = [];
   users: Compte[] = [];
   isFiltrageEnCours = false;
+  services: Service[] = [];
 
   userName: string = 'Chargement...';
   userPrenom: string = '';
@@ -50,7 +53,8 @@ export class AgentDashboardComponent {
     filtres: any = {
     priorite: '',
     dateDebutStart: '',
-    dateDebutEnd: ''
+    dateDebutEnd: '',
+    serviceId: ''
   };
 calendarOptions: CalendarOptions = {
   plugins: [resourceTimelinePlugin, interactionPlugin],
@@ -82,21 +86,28 @@ calendarOptions: CalendarOptions = {
 
   // Style des événements
 eventContent: (info) => {
-  const priorite = info.event.extendedProps['priorite'] as string;
-  const couleur = this.getCouleurParPriorite(priorite);
-  const textColor = 
-    priorite === 'FAIBLE' ? '#065f46' : 
-    priorite === 'MOYENNE' ? '#7c2d12' : 
-    priorite === 'HAUTE' ? '#7f1d1d' : 
-    '#4b5563';
+  const tache = info.event.extendedProps as Tache;
+
+  const color = tache.codeColor || '#6366f1';
+  const isCadre = tache.cadre === true;
+  const isConteneur = tache.conteneur === true;
+
+  const textColor = isConteneur ? 'white' : '#1f2937';
+  const backgroundColor = isConteneur ? color : '#f3f4f6';
+  const borderColor = isCadre ? '#ef4444' : color; 
+  const border = isCadre ? '3px solid' : '1px solid';
+
+  const opacity = info.isPast ? '0.7' : '1';
 
   return {
     html: `
       <div style="
-        background: ${couleur};
+        background-color: ${backgroundColor};
         color: ${textColor};
-        border-radius: 6px;
-        padding: 4px 8px;
+        border: ${border};
+        border-color: ${borderColor};
+        border-radius: 8px;
+        padding: 6px 10px;
         font-size: 0.85em;
         font-weight: 600;
         text-align: center;
@@ -104,13 +115,20 @@ eventContent: (info) => {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+        transition: all 0.2s ease;
+        opacity: ${opacity};
+        box-sizing: border-box;
+        min-height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       ">
-        ${info.timeText ? `<span style="font-size:0.7em; opacity:0.8;">${info.timeText}</span><br/>` : ''}
+        ${info.timeText ? `<span style="font-size:0.7em; opacity:0.9;">${info.timeText}</span><br/>` : ''}
         <span>${info.event.title}</span>
       </div>
     `
   };
-} ,
+},
 
   slotLabelContent: (arg) => {
     const date = new Date(arg.date);
@@ -146,17 +164,18 @@ eventContent: (info) => {
   resourceAreaWidth: '150px',
   resourceLabelContent: (info) => {
     return {
-      html: `
-        <div style="
-          font-weight:600; 
-          color:#1f2937; 
-          padding:8px; 
-          border-bottom:1px solid #e5e7eb;">
-          ${info.resource.title}
-        </div>
-      `
+        html: `
+          <div style="
+            font-weight:600; 
+            color:#1f2937; 
+            padding:8px;
+            margin-bottom: 4px;
+          ">
+            ${info.resource.title}
+          </div>
+        `
     };
-  },
+},
   eventClick: this.onEventClick.bind(this),
   eventDrop: this.onEventDrop.bind(this),
 
@@ -171,12 +190,14 @@ eventContent: (info) => {
     private dialog: MatDialog,
     private router: Router,
     private taskService: TaskService,
-    private userService: UserService
+    private userService: UserService,
+    private serviceService: ServiceService
   ) {}
 
   ngOnInit(): void {
     this.chargerTaches();
-    this.decodeToken(); 
+    this.decodeToken();
+    this.loadServices(); 
     this.refreshCalendar();
     this.loadUsers();
 
@@ -207,16 +228,28 @@ eventContent: (info) => {
   };
   this.chargerTaches();
 }
-  decodeToken(): void {
+decodeToken(): void {
   const token = localStorage.getItem('token');
   if (token) {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    this.userId = payload.Id;
-    console.log('Utilisateur connecté ID :', this.userId);
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      this.userId = payload.id; 
+      console.log('Utilisateur connecté ID :', this.userId);
+    } catch (e) {
+      console.error('Erreur lecture token:', e);
+    }
   }
 }
-
-
+loadServices() {
+  this.serviceService.getAll().subscribe({
+    next: (data) => {
+      this.services = data;
+    },
+    error: (err) => {
+      console.error('Erreur lors du chargement des services', err);
+    }
+  });
+}
 loadUsers() {
   this.userService.getAll().subscribe(data => {
     this.users = data;
@@ -250,7 +283,7 @@ loadUsers() {
   }
 refreshCalendar() {
   this.taskService.getTaches().subscribe((tasks: Tache[]) => {
-    let events = tasks.map(task => ({
+    const events = tasks.map(task => ({
       id: task.id?.toString(),
       title: task.titre,
       start: task.dateDebut,
@@ -261,36 +294,29 @@ refreshCalendar() {
         description: task.description,
         priorite: task.priorite,
         agentId: task.agentId,
-        etat: task.etat
+        etat: task.etat,
+        // Ajout des nouveaux champs
+        codeColor: task.codeColor,
+        cadre: task.cadre,
+        conteneur: task.conteneur
       },
-      classNames: [] as string[] 
+      classNames: [] as string[]
     }));
 
-
     const conflicts = this.checkForConflicts(events);
-    console.log('Conflits détectés :', conflicts);
     for (const resourceId in conflicts) {
       conflicts[resourceId].forEach(([eventA, eventB]) => {
-        eventA.classNames = eventA.classNames || [];
-        eventB.classNames = eventB.classNames || [];
-        if (!eventA.classNames.includes('conflict')) eventA.classNames.push('conflict');
-        if (!eventB.classNames.includes('conflict')) eventB.classNames.push('conflict');
+        if (!eventA.classNames?.includes('conflict')) eventA.classNames?.push('conflict');
+        if (!eventB.classNames?.includes('conflict')) eventB.classNames?.push('conflict');
       });
     }
+
     this.calendarOptions = {
       ...this.calendarOptions,
       events: events
     };
   });
-}
-getCouleurParPriorite(priorite: string): string {
-  switch (priorite?.trim().toUpperCase()) {
-    case 'HAUTE':   return '#FFCCED';
-    case 'MOYENNE': return '#F9FFA6'; 
-    case 'FAIBLE':  return '#a7f3d0'; 
-    default:        return '#A6DDFF'; 
-  }
-}
+} 
 getWeekNumber(date: Date): number {
   const target = new Date(date.valueOf());
   const dayNr = (date.getDay() + 6) % 7;
@@ -327,38 +353,43 @@ getWeekNumber(date: Date): number {
   }
 
   chargerTaches(): void {
-    const token = localStorage.getItem('token');
-    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+  const token = localStorage.getItem('token');
+  const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    const url = this.afficherToutesTaches
-      ? 'http://localhost:8083/taches'
-      : 'http://localhost:8083/taches/mes-taches';
+  const url = this.afficherToutesTaches
+    ? 'http://localhost:8083/taches'
+    : 'http://localhost:8083/taches/mes-taches';
 
-    this.http.get<Tache[]>(url, { headers })
-      .pipe(
-        tap(data => {
-          this.taches = data;
-          this.calendarOptions.events = data.map(task => ({
-            title: task.titre,
-            start: task.dateDebut,
-            end: this.computeEndDate(task.dateDebut, task.dureeEnHeures),
-            resourceId: task.agentId?.toString(),
-            extendedProps: {
-              id: task.id,
-              description: task.description,
-              priorite: task.priorite,
-              agentId: task.agentId,
-              etat: task.etat
-            }
-          }));
-        }),
-        catchError(err => {
-          console.error('Erreur chargement tâches :', err);
-          return EMPTY;
-        })
-      )
-      .subscribe();
-  }
+  this.http.get<Tache[]>(url, { headers })
+    .pipe(
+      tap(data => {
+        this.taches = data;
+        this.calendarOptions.events = data.map(task => ({
+          id: task.id?.toString(),
+          title: task.titre,
+          start: task.dateDebut,
+          end: this.computeEndDate(task.dateDebut, task.dureeEnHeures),
+          resourceId: task.agentId?.toString(),
+          extendedProps: {
+            id: task.id,
+            description: task.description,
+            priorite: task.priorite,
+            agentId: task.agentId,
+            etat: task.etat,
+            codeColor: task.codeColor,
+            cadre: task.cadre,
+            conteneur: task.conteneur
+          },
+          classNames: [] as string[]
+        }));
+      }),
+      catchError(err => {
+        console.error('Erreur chargement tâches :', err);
+        return EMPTY;
+      })
+    )
+    .subscribe();
+}
 
   computeEndDate(start: string, dureeHeures: number): string {
     const date = new Date(start);
@@ -435,45 +466,73 @@ deleteTache(id: number): void {
 }
 //filtre
 appliquerFiltres() {
-  this.isFiltrageEnCours = true;
   const token = localStorage.getItem('token');
   const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
   let params: any = {};
-
-  // 🔧 Correction : s'assurer que les valeurs sont bien transmises
+  if (this.filtres.serviceId) params.serviceId = +this.filtres.serviceId;
   if (this.filtres.agentId) params.agentId = this.filtres.agentId;
-  if (this.filtres.priorite) params.priorite = this.filtres.priorite.toUpperCase(); // 🔴 HAUTE, MOYENNE, FAIBLE
-  if (this.filtres.dateDebutStart) 
-    params.start = new Date(this.filtres.dateDebutStart).toISOString();
-  if (this.filtres.dateDebutEnd) 
-    params.end = new Date(this.filtres.dateDebutEnd).toISOString();
-
-  // Si on est en mode "mes tâches", on ajoute un filtre implicite
-  if (!this.afficherToutesTaches && this.userId) {
-    params.agentId = this.userId; // Force le filtre sur l'utilisateur connecté
-  }
+  if (this.filtres.priorite) params.priorite = this.filtres.priorite;
+  if (this.filtres.dateDebutStart) params.start = new Date(this.filtres.dateDebutStart).toISOString();
+  if (this.filtres.dateDebutEnd) params.end = new Date(this.filtres.dateDebutEnd).toISOString();
 
   this.http.get<Tache[]>('http://localhost:8083/taches/filtre', { params, headers }).subscribe({
     next: (data) => {
-      this.taches = data;
-      this.calendarOptions.events = data.map(task => ({
-        title: task.titre,
-        start: task.dateDebut,
-        end: this.computeEndDate(task.dateDebut, task.dureeEnHeures),
-        resourceId: task.agentId?.toString(),
-        extendedProps: {
-          id: task.id,
-          description: task.description,
-          priorite: task.priorite,
-          agentId: task.agentId,
-          etat: task.etat
-        }
-      }));
+      this.mettreAJourEvenements(data);
     },
     error: (err) => {
-      console.error('Erreur lors du filtrage des tâches :', err);
-      alert("Erreur d'authentification ou paramètres invalides.");
+      console.error('Erreur lors du filtrage des tâches', err);
+      if (err.status === 403) {
+        alert("Vous n'avez pas le droit d'accéder à ces données.");
+      } else {
+        alert("Erreur lors du filtrage. Vérifiez les paramètres.");
+      }
+    }
+  });
+}
+mettreAJourEvenements(taches: Tache[]) {
+  const events = taches.map(tache => ({
+    id: tache.id?.toString(),
+    title: tache.titre,
+    start: tache.dateDebut,
+    end: this.computeEndDate(tache.dateDebut, tache.dureeEnHeures),
+    resourceId: tache.agentId?.toString(),
+    extendedProps: {
+      id: tache.id,
+      description: tache.description,
+      priorite: tache.priorite,
+      agentId: tache.agentId,
+      etat: tache.etat,
+      codeColor: tache.codeColor,
+      cadre: tache.cadre,
+      conteneur: tache.conteneur
+    },
+    classNames: [] as string[]
+  }));
+
+  this.calendarOptions.events = events;
+}
+chargerTachesParService() {
+  const serviceId = +this.filtres.serviceId;
+
+  if (!serviceId) {
+    alert('Aucun service sélectionné.');
+    return;
+  }
+
+  const token = localStorage.getItem('token');
+  const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+
+  this.http.get<Tache[]>(`http://localhost:8083/taches/par-service`, {
+    params: { serviceId },
+    headers
+  }).subscribe({
+    next: (taches) => {
+      this.mettreAJourEvenements(taches);
+    },
+    error: (err) => {
+      console.error('Erreur lors du chargement des tâches du service', err);
+      alert('Erreur lors du chargement des tâches de ce service.');
     }
   });
 }
@@ -542,4 +601,30 @@ toggleSidebar(): void {
       window.location.reload();
     });
   }
+  exporterExcel() {
+  const token = localStorage.getItem('token');
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`,
+    'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  });
+
+  this.http.get('http://localhost:8083/export/taches.xlsx', {
+    headers: headers,
+    responseType: 'blob'
+  }).subscribe({
+    next: (data) => {
+      const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'taches_' + new Date().toISOString().split('T')[0] + '.xlsx';
+      link.click();
+      window.URL.revokeObjectURL(url);
+    },
+    error: (err) => {
+      console.error('Erreur export Excel', err);
+      alert('Erreur lors de l’export des tâches.');
+    }
+  });
+}
 }

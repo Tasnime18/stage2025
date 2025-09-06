@@ -1,5 +1,6 @@
 package com.example.user_service.controller;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,16 +23,21 @@ public class CompteController {
     CompteController(CompteService compteService){
         this.compteService=compteService;
     }
+
     @PostMapping("/add")
-    public ResponseEntity<?> creerAgent(@RequestBody CompteDTO dto) {
-        compteService.addCompte(dto);
-        return ResponseEntity.ok("Agent créé avec succès");
-    }
-     @GetMapping("/all")
-    public ResponseEntity<List<Compte>> getAllComptes() {
-        List<Compte> comptes = compteService.getUsers();
-        return ResponseEntity.ok(comptes);
-    }
+public ResponseEntity<String> creerAgent(@RequestBody CompteDTO dto) {
+    compteService.addCompte(dto);
+    return ResponseEntity.ok("Agent créé avec succès");
+}
+
+    @GetMapping("/all")
+public ResponseEntity<List<CompteDTO>> getAll() {
+    List<Compte> comptes = compteService.getUsers();
+    List<CompteDTO> dtos = comptes.stream()
+        .map(CompteDTO::new)
+        .collect(Collectors.toList());
+    return ResponseEntity.ok(dtos);
+}
 
     @GetMapping("/{id}")
     public ResponseEntity<Compte> getCompteById(@PathVariable Long id) {
@@ -76,6 +82,15 @@ public ResponseEntity<String> activerCompte(@PathVariable Long id) {
     boolean result = compteService.setActifStatus(id, true);
     if (result) return ResponseEntity.ok("Compte activé.");
     else return ResponseEntity.notFound().build();
+}
+
+@GetMapping("/by-service/{serviceId}")
+public ResponseEntity<List<CompteDTO>> getUsersByService(@PathVariable Long serviceId) {
+    List<Compte> comptes = compteService.getUsersByServiceId(serviceId);
+    List<CompteDTO> dtos = comptes.stream()
+        .map(CompteDTO::new)
+        .collect(Collectors.toList());
+    return ResponseEntity.ok(dtos);
 }
 
 
