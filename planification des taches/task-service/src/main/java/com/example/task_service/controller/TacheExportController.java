@@ -118,7 +118,6 @@ public ResponseEntity<ByteArrayResource> exporterTaches(
                 row.createCell(4).setCellValue(tache.getDureeEnHeures());
                 row.createCell(5).setCellValue(tache.getPriorite());
 
-                // 🔹 Nom complet de l'agent
                 String nomAgent = "Non assigné";
                 if (tache.getAgentId() != null && userMap.containsKey(tache.getAgentId())) {
                     nomAgent = userMap.get(tache.getAgentId());
